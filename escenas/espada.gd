@@ -15,6 +15,9 @@ var distancia_recorrida: float = 0.0
 
 func _ready():
 	self.body_entered.connect(_on_Espada_body_entered)
+	# 💥 IMPORTANTE: Asegúrate de que la espada sea visible por defecto en el editor.
+	# Si la ocultaste en el editor, puedes forzar que se muestre aquí:
+	show() 
 
 func lanzar(pos_inicial: Vector2, dir: Vector2, jugador_ref: Node2D) -> void:
 	global_position = pos_inicial
@@ -26,6 +29,10 @@ func lanzar(pos_inicial: Vector2, dir: Vector2, jugador_ref: Node2D) -> void:
 	set_physics_process(true)
 	rotation = direccion.angle()
 	
+	# La línea 'show()' ya no es necesaria si la espada está visible por defecto
+	# pero la dejamos por si acaso.
+	show() 
+	
 	# Reproduce el sonido cuando la espada es lanzada
 	sonido_lanzar.play()
 	
@@ -35,6 +42,7 @@ func _physics_process(delta: float) -> void:
 		return
 
 	if not lanzada:
+		# Lógica para pegar la espada al jugador
 		var dir_jugador: Vector2 = jugador.direccion_mirada
 		var pos_offset = dir_jugador * offset
 		global_position = jugador.global_position + pos_offset
@@ -59,7 +67,16 @@ func _physics_process(delta: float) -> void:
 func _finish() -> void:
 	lanzada = false
 	regresando = false
-
+	# 💥 CORRECCIÓN CRÍTICA: Se elimina la línea 'hide()' para que la espada no se oculte.
+	# La lógica 'if not lanzada' en _physics_process se encarga de pegarla al jugador.
+	
 func _on_Espada_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Enemigo"):
-		body.morir()
+		
+		# LÓGICA DE DAÑO CONDICIONAL
+		if body is BossFinal:
+			body.recibir_danio(1) 
+			regresando = true
+			
+		else:
+			body.morir()

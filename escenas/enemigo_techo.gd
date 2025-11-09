@@ -43,7 +43,7 @@ func disparar():
 	if puede_disparar and is_instance_valid(jugador):
 		
 		puede_disparar = false
-		print("Enemigo Techo: Iniciando Carga de Láser AUTOMÁTICA.")
+		
 		
 		anim.play("carga") 
 		
@@ -55,7 +55,7 @@ func lanzar_laser():
 		reset_cooldown()
 		return
 
-	print("Enemigo Techo: RAYO LÁSER DISPARADO!")
+	
 	anim.play("disparo") 
 	
 	rayo_laser.force_raycast_update()
@@ -67,7 +67,7 @@ func lanzar_laser():
 		
 		var cuerpo_golpeado = rayo_laser.get_collider()
 		
-		print("DEBUG COLISIÓN: Golpea:", cuerpo_golpeado.name, " Tipo:", cuerpo_golpeado.get_class())
+		# print("DEBUG COLISIÓN: Golpea:", cuerpo_golpeado.name, " Tipo:", cuerpo_golpeado.get_class())
 		
 		if cuerpo_golpeado.is_in_group("Jugador"):
 			# LLAMA A LA FUNCIÓN DE GAME OVER DEL JUGADOR

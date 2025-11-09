@@ -138,3 +138,5 @@ shape = SubResource("RectangleShape2D_ulnqd")
 
 [node name="SonidoMuerte" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_j63wm")
+
+[connection signal="body_entered" from="Detector" to="." method="_on_detector_body_entered"]

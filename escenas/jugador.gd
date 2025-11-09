@@ -55,19 +55,23 @@ func _lanzar_espada() -> void:
 		espada.show()
 		espada.lanzar(espada.global_position, dir, self)
 
-# 💥 FUNCIÓN CRÍTICA: LLAMADA POR EL LÁSER DEL ENEMIGO PARA TERMINAR EL JUEGO
+# 💥 FUNCIÓN PRINCIPAL DE MUERTE/GAME OVER
 func go_to_game_over():
-	print("El jugador ha muerto. Iniciando Game Over.")
+	print("El jugador ha muerto. Iniciando Game Over (deferido).")
 	
-	# 1. Detiene la lógica y el movimiento
+	# Detiene la lógica y el movimiento inmediatamente
 	set_physics_process(false)
 	set_process(false)
 	
-	# 2. Lógica para Game Over: Pausa el árbol y cambia la escena.
+	# 🛑 USAMOS call_deferred para ejecutar el cambio de escena
+	# de forma segura, fuera del ciclo de física.
+	call_deferred("_execute_game_over_actions")
 	
-	# NOTA: Asegúrate de que las llamadas a 'HUD' y 'MusicManager' son correctas
-	# si son Autoloads o si las has comentado.
+# ⚙️ FUNCIÓN QUE EJECUTA LAS ACCIONES PELIGROSAS (cambio de escena, destrucción)
+func _execute_game_over_actions():
+	# Lógica para Game Over: Pausa el árbol y cambia la escena.
 	
+	# NOTA: Comenta o ajusta las siguientes líneas si HUD y MusicManager no existen:
 	# HUD.resetear_inventario()
 	# inventario.clear()
 	
@@ -78,6 +82,6 @@ func go_to_game_over():
 	get_tree().paused = true
 	get_tree().change_scene_to_file("res://escenas/GameOver.tscn")
 
-# Se mantiene 'morir' para ser compatible, simplemente llama a la función de Game Over.
+# Se mantiene 'morir' para ser compatible
 func morir():
 	go_to_game_over()
