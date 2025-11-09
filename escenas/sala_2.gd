@@ -3,23 +3,21 @@ extends Node2D
 # Referencias a los nodos
 @onready var jugador := $Jugador
 @onready var pared_secreta: Node2D = $ParedSecreta
-@onready var detector_sala_3: Area2D = $DetectorSala3 
+@onready var detector_sala_3: Area2D = $DetectorSala3
 @onready var musica_sala: AudioStreamPlayer = $MusicaSala
 
 @export var escena_enemigo_volador: PackedScene
 @export var escena_pared_secreta: PackedScene
+# 🆕 NUEVA EXPORTACIÓN: Para cargar la escena del EnemigoTecho
+@export var escena_enemigo_techo: PackedScene 
 
 func _ready():
 	# El jugador comienza en una posicion adecuada para la entrada de Sala 2
-	# Ajusta estos valores segun la geometria de tu Sala2.
-	jugador.position = Vector2(-400, 0) 
+	jugador.position = Vector2(-400, 0)
 	
-	# Registra la musica de la sala con el sistema de audio global.
-	# Asume que tienes un sistema de audio global 'Audio'
-	
-	
-	# Inicia la musica de la sala si el sonido esta activado.
-	
+
+	# 🆕 INICIA EL COMBATE AL ENTRAR EN LA SALA
+	spawn_enemigos_sala2()
 
 func _physics_process(delta):
 	Global.posicion_jugador = jugador.position
@@ -29,29 +27,50 @@ func _physics_process(delta):
 	if enemigos_restantes.size() == 0:
 		abrir_puerta()
 
-# --- Funciones de Enemigos y Puerta ---
+# ⚔️ NUEVO ENCUENTRO: Define dónde y qué enemigos aparecen
+func spawn_enemigos_sala2():
+	# Instancia 2 Enemigos Voladores en posiciones variadas
+	instanciar_enemigo_volador(Vector2(900, 500))
+	instanciar_enemigo_volador(Vector2(900, 500))
 
-func spawn_enemigo_volador():
-	# Puedes llamar a esta funcion desde el script Jugador.gd si recoge un item
-	call_deferred("instanciar_enemigo_de_forma_segura")
+	# 🆕 Instancia 1 Enemigo Techo en el centro superior (posición de torreta)
+	instanciar_enemigo_techo(Vector2(800, 50))
+	print("Encuentro de Sala 2 iniciado.")
 
-func instanciar_enemigo_de_forma_segura():
+# --- Funciones de Instanciación ---
+
+# 🛠️ Función Volador modificada para aceptar posición y usar deferred
+func instanciar_enemigo_volador(posicion_spawn: Vector2):
+	call_deferred("instanciar_enemigo_volador_de_forma_segura", posicion_spawn)
+
+# 🛠️ Función de Volador modificada para usar la posición
+func instanciar_enemigo_volador_de_forma_segura(posicion_spawn: Vector2):
 	if escena_enemigo_volador:
-		# Instancia la pared secreta si aun no existe
+		# Instancia la pared secreta si aun no existe (solo si es necesario)
 		if not is_instance_valid(pared_secreta):
 			if escena_pared_secreta:
 				var nueva_pared = escena_pared_secreta.instantiate()
-				# Asegurate de posicionar la pared correctamente en Sala 2
-				# Si no necesitas una pared, puedes eliminar esta parte.
-				add_child(nueva_pared) 
+				add_child(nueva_pared)
 				pared_secreta = nueva_pared
 			
 		var enemigo_volador = escena_enemigo_volador.instantiate()
 		add_child(enemigo_volador)
 		
-		# --- Cambia estas coordenadas para un punto de spawn en Sala 2 ---
-		enemigo_volador.global_position = Vector2(300, 200)
-		print("¡Enemigo volador instanciado en Sala 2!")
+		# 🛠️ Usa la posición de spawn
+		enemigo_volador.global_position = posicion_spawn
+		print("¡Enemigo volador instanciado en:", posicion_spawn, "!")
+
+# 🆕 Función para instanciar el Enemigo Techo
+func instanciar_enemigo_techo(posicion_spawn: Vector2):
+	call_deferred("instanciar_enemigo_techo_de_forma_segura", posicion_spawn)
+
+func instanciar_enemigo_techo_de_forma_segura(posicion_spawn: Vector2):
+	if escena_enemigo_techo:
+		var enemigo_techo = escena_enemigo_techo.instantiate()
+		add_child(enemigo_techo)
+		enemigo_techo.global_position = posicion_spawn
+		print("¡Enemigo Techo instanciado en:", posicion_spawn, "!")
+
 
 func abrir_puerta():
 	if is_instance_valid(pared_secreta):
@@ -65,10 +84,8 @@ func _on_detector_sala_3_body_entered(body: Node2D) -> void:
 		call_deferred("cambiar_a_siguiente_escena")
 
 func cambiar_a_siguiente_escena():
-	# Mueve el nodo de música a la raíz antes de cambiar de escena.
+	# Mueve el nodo de música a la raíz antes de cambiar de escena (manteniendo tu lógica)
 	musica_sala.get_parent().remove_child(musica_sala)
 	get_tree().root.add_child(musica_sala)
 
-	# ⚠️ MODIFICAR: Reemplaza con tu siguiente escena (Sala3, Victory, etc.)
-	# Por ahora, usamos la misma Sala2 para no tener error, pero ajustalo.
 	get_tree().change_scene_to_file("res://escenas/Sala3.tscn")

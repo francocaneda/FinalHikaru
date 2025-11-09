@@ -1,8 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://byoos7bvrov2m"]
+[gd_scene load_steps=14 format=3 uid="uid://byoos7bvrov2m"]
 
 [ext_resource type="Texture2D" uid="uid://cx88qtpkx3yx6" path="res://sprites/Sala.png" id="1_421sj"]
 [ext_resource type="Script" uid="uid://b4cjg22qoqlyy" path="res://escenas/sala_2.gd" id="1_584hn"]
+[ext_resource type="PackedScene" uid="uid://b0kip1stqegow" path="res://escenas/EnemigoVolador.tscn" id="2_cnp11"]
 [ext_resource type="PackedScene" uid="uid://bea5ula71tjjd" path="res://escenas/Jugador.tscn" id="2_crttl"]
+[ext_resource type="PackedScene" uid="uid://cinptmh1023dj" path="res://escenas/EnemigoTecho.tscn" id="2_o8c8o"]
 [ext_resource type="AudioStream" uid="uid://vl4cw7ycqcvc" path="res://sounds/musicaFondo.ogg" id="4_hacu8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_crttl"]
@@ -29,6 +31,8 @@ size = Vector2(189, 20)
 [node name="Sala2" type="Node2D"]
 position = Vector2(643, 402)
 script = ExtResource("1_584hn")
+escena_enemigo_volador = ExtResource("2_cnp11")
+escena_enemigo_techo = ExtResource("2_o8c8o")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-4, -40.5)
