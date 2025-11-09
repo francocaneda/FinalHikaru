@@ -35,6 +35,7 @@ func spawn_enemigos_sala2():
 
 	# 🆕 Instancia 1 Enemigo Techo en el centro superior (posición de torreta)
 	instanciar_enemigo_techo(Vector2(800, 50))
+	instanciar_enemigo_techo(Vector2(490, 50))
 	print("Encuentro de Sala 2 iniciado.")
 
 # --- Funciones de Instanciación ---
