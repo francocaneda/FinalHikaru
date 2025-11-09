@@ -41,14 +41,24 @@ size = Vector2(94, 54)
 [node name="TorretaTecho" type="CharacterBody2D"]
 script = ExtResource("1_8v4d0")
 
+[node name="LaserVisual" type="Line2D" parent="."]
+visible = false
+modulate = Color(0.835718, 1.73271e-06, 4.81307e-07, 1)
+self_modulate = Color(0.835294, 0, 0, 1)
+z_index = 20
+points = PackedVector2Array(0, 580)
+width = 20.0
+default_color = Color(0.848603, 0.150478, 0, 1)
+joint_mode = 2
+
 [node name="anim" type="AnimatedSprite2D" parent="."]
 scale = Vector2(1.68333, 1.85345)
 sprite_frames = SubResource("SpriteFrames_kk07t")
-animation = &"idle"
+animation = &"carga"
 
 [node name="RayoLaser" type="RayCast2D" parent="."]
 enabled = false
-target_position = Vector2(0, 1000)
+target_position = Vector2(0, 3000)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1, -1.5)
