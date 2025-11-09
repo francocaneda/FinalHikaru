@@ -1,4 +1,3 @@
-# Jugador.gd
 extends CharacterBody2D
 
 @export var velocidad := 450.0
@@ -43,7 +42,6 @@ func agregar_item(item_name: String):
 	inventario.append(item_name)
 	print("Inventario:", inventario)
 	
-	# Si el item es el "Escudo", instanciar el enemigo
 	if item_name == "Escudo":
 		if get_parent() and get_parent().has_method("spawn_enemigo_volador"):
 			get_parent().spawn_enemigo_volador()
@@ -57,18 +55,29 @@ func _lanzar_espada() -> void:
 		espada.show()
 		espada.lanzar(espada.global_position, dir, self)
 
-# 🆕 FUNCIÓN DE MUERTE INSTANTÁNEA
-func morir():
-	print("El jugador ha sido fulminado por el rayo láser.")
-	# 1. Deshabilitar el movimiento y la colisión
+# 💥 FUNCIÓN CRÍTICA: LLAMADA POR EL LÁSER DEL ENEMIGO PARA TERMINAR EL JUEGO
+func go_to_game_over():
+	print("El jugador ha muerto. Iniciando Game Over.")
+	
+	# 1. Detiene la lógica y el movimiento
 	set_physics_process(false)
 	set_process(false)
-	set_collision_mask_value(1, false) # Opcional: Deshabilita la colisión con paredes
-
-	# 2. Ocultar el jugador o mostrar animación de muerte
-	anim.play("muerte") # Asume que tienes una animación "muerte"
 	
-	# 3. Mostrar pantalla de Game Over o reiniciar la escena después de un tiempo
-	# Ejemplo: Reiniciar la escena después de 1 segundo
-	await get_tree().create_timer(1.0).timeout
-	get_tree().reload_current_scene()
+	# 2. Lógica para Game Over: Pausa el árbol y cambia la escena.
+	
+	# NOTA: Asegúrate de que las llamadas a 'HUD' y 'MusicManager' son correctas
+	# si son Autoloads o si las has comentado.
+	
+	# HUD.resetear_inventario()
+	# inventario.clear()
+	
+	# if is_instance_valid(MusicManager):
+	#     if MusicManager.is_playing():
+	#         MusicManager.stop()
+	
+	get_tree().paused = true
+	get_tree().change_scene_to_file("res://escenas/GameOver.tscn")
+
+# Se mantiene 'morir' para ser compatible, simplemente llama a la función de Game Over.
+func morir():
+	go_to_game_over()

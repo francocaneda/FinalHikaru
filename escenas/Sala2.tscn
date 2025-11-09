@@ -63,28 +63,28 @@ debug_color = Color(0.725728, 0.324897, 0.873085, 0.42)
 [node name="Pared4" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Pared4"]
-position = Vector2(-317, -342)
+position = Vector2(-313, -351)
 shape = SubResource("RectangleShape2D_o8c8o")
 debug_color = Color(0.739183, 0.278634, 0.926051, 0.42)
 
 [node name="Pared5" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Pared5"]
-position = Vector2(310, -342)
+position = Vector2(313, -351)
 shape = SubResource("RectangleShape2D_cnp11")
 debug_color = Color(0.717875, 0.355108, 0.824741, 0.42)
 
 [node name="ParedSecreta" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ParedSecreta"]
-position = Vector2(-10, -342)
+position = Vector2(-6, -350)
 shape = SubResource("RectangleShape2D_ew3fu")
 debug_color = Color(0.701878, 0.35388, 0.861241, 0.42)
 
 [node name="DetectorSala3" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectorSala3"]
-position = Vector2(-14, -366)
+position = Vector2(-6, -371)
 shape = SubResource("RectangleShape2D_o7nll")
 
 [node name="Jugador" parent="." instance=ExtResource("2_crttl")]

@@ -9,7 +9,7 @@
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_kk07t")
+"texture": ExtResource("2_io2t3")
 }],
 "loop": true,
 "name": &"carga",
@@ -46,7 +46,7 @@ visible = false
 modulate = Color(0.835718, 1.73271e-06, 4.81307e-07, 1)
 self_modulate = Color(0.835294, 0, 0, 1)
 z_index = 20
-points = PackedVector2Array(0, 580)
+points = PackedVector2Array(0, 25)
 width = 20.0
 default_color = Color(0.848603, 0.150478, 0, 1)
 joint_mode = 2

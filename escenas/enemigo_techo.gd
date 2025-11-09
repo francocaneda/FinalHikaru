@@ -20,14 +20,13 @@ func _ready():
 	
 	add_to_group("Enemigo")
 	
-	# 💥 ARREGLO FINAL PARA GODOT 4: Asegura que el Line2D tenga dos puntos.
-	# Si falta el segundo punto, lo añadimos para evitar el error de índice.
+	# ARREGLO PARA GODOT 4: Asegura que el Line2D tenga dos puntos.
 	if linea_laser.points.size() < 2:
-		var temp_points = linea_laser.points # Copia temporal
+		var temp_points = linea_laser.points
 		if temp_points.is_empty():
-			temp_points.append(Vector2.ZERO) # Asegura el punto 0
-		temp_points.append(Vector2.ZERO)    # Añade el punto 1
-		linea_laser.points = temp_points    # Reasigna el array corregido
+			temp_points.append(Vector2.ZERO)
+		temp_points.append(Vector2.ZERO)
+		linea_laser.points = temp_points
 	
 	# Inicia con la animación de reposo
 	anim.play("idle")
@@ -44,9 +43,9 @@ func disparar():
 	if puede_disparar and is_instance_valid(jugador):
 		
 		puede_disparar = false
+		print("Enemigo Techo: Iniciando Carga de Láser AUTOMÁTICA.")
 		
-		
-		anim.play("idle")
+		anim.play("carga") 
 		
 		var timer = get_tree().create_timer(tiempo_de_carga)
 		timer.timeout.connect(lanzar_laser)
@@ -56,7 +55,7 @@ func lanzar_laser():
 		reset_cooldown()
 		return
 
-	
+	print("Enemigo Techo: RAYO LÁSER DISPARADO!")
 	anim.play("disparo") 
 	
 	rayo_laser.force_raycast_update()
@@ -68,18 +67,22 @@ func lanzar_laser():
 		
 		var cuerpo_golpeado = rayo_laser.get_collider()
 		
+		print("DEBUG COLISIÓN: Golpea:", cuerpo_golpeado.name, " Tipo:", cuerpo_golpeado.get_class())
+		
 		if cuerpo_golpeado.is_in_group("Jugador"):
-			if cuerpo_golpeado.has_method("morir"):
-				cuerpo_golpeado.morir()
-			print("Láser golpeó al JUGADOR y lo mató!")
+			# LLAMA A LA FUNCIÓN DE GAME OVER DEL JUGADOR
+			if cuerpo_golpeado.has_method("go_to_game_over"):
+				cuerpo_golpeado.go_to_game_over()
+			print("Láser golpeó al JUGADOR y activó Game Over!")
 			
-	# DIBUJAR EL LÁSER (Sintaxis Godot 4)
+			# 🛑 SOLUCIÓN AL CRASH: Salir inmediatamente.
+			return 
+			
+	# DIBUJAR EL LÁSER
 	linea_laser.show()
-	
-	# Crea una copia temporal del array para modificar el punto 1 de forma segura
 	var temp_points = linea_laser.points
-	temp_points[1] = punto_final # Modificación segura en Godot 4
-	linea_laser.points = temp_points # Reasignación
+	temp_points[1] = punto_final 
+	linea_laser.points = temp_points 
 	
 	# Ocultar el láser (Efecto Flash) e iniciar cooldown
 	var flash_timer = get_tree().create_timer(0.1) 
@@ -102,6 +105,7 @@ func reset_cooldown():
 	)
 
 func morir():
+	# Función de muerte (útil para la espada del jugador)
 	if is_instance_valid(sonido_muerte):
 		sonido_muerte.play()
 		sonido_muerte.get_parent().remove_child(sonido_muerte)
