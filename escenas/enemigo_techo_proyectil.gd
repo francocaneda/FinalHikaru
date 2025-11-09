@@ -7,15 +7,20 @@ var direccion: Vector2 = Vector2.ZERO
 
 func _ready():
 	# Conectamos la señal de colisión 
-	self.body_entered.connect(_on_body_entered)
+	#self.body_entered.connect(_on_body_entered)
+	pass
 
 func _physics_process(delta):
 	# Mueve el proyectil
 	global_position += direccion * velocidad * delta
+	# 💡 PRUEBA: Verifica que la velocidad no sea cero
+	if direccion != Vector2.ZERO:
+		print("Proyectil moviéndose. Dirección: ", direccion)
 
 # Función llamada por el EnemigoTecho para iniciar el movimiento
 func lanzar_en_direccion(dir: Vector2):
 	direccion = dir.normalized()
+	print("Proyectil recibió dirección: ", direccion) # 💡 PRUEBA
 	# No es necesario rotar para un disparo vertical.
 
 func _on_body_entered(body: Node2D):

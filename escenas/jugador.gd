@@ -56,3 +56,19 @@ func _lanzar_espada() -> void:
 	if dir != Vector2.ZERO:
 		espada.show()
 		espada.lanzar(espada.global_position, dir, self)
+
+# 🆕 FUNCIÓN DE MUERTE INSTANTÁNEA
+func morir():
+	print("El jugador ha sido fulminado por el rayo láser.")
+	# 1. Deshabilitar el movimiento y la colisión
+	set_physics_process(false)
+	set_process(false)
+	set_collision_mask_value(1, false) # Opcional: Deshabilita la colisión con paredes
+
+	# 2. Ocultar el jugador o mostrar animación de muerte
+	anim.play("muerte") # Asume que tienes una animación "muerte"
+	
+	# 3. Mostrar pantalla de Game Over o reiniciar la escena después de un tiempo
+	# Ejemplo: Reiniciar la escena después de 1 segundo
+	await get_tree().create_timer(1.0).timeout
+	get_tree().reload_current_scene()
