@@ -2,11 +2,15 @@ extends Node
 
 var puntuacion_actual := 0
 var posicion_jugador: Vector2 = Vector2.ZERO
+# 💥 NUEVO: Inventario persistente (Array para guardar strings de items)
+var inventario: Array = [] 
 
 func guardar_juego():
 	var datos = {
 		"posicion_jugador": posicion_jugador,
-		"puntuacion": puntuacion_actual
+		"puntuacion": puntuacion_actual,
+		# 💥 NUEVO: Guardamos el inventario
+		"inventario": inventario 
 	}
 	
 	var file = FileAccess.open("user://guardado.json", FileAccess.WRITE)
@@ -19,8 +23,18 @@ func cargar_juego():
 	if FileAccess.file_exists("user://guardado.json"):
 		var file = FileAccess.open("user://guardado.json", FileAccess.READ)
 		if file:
-			var datos = JSON.parse_string(file.get_as_text()).result
+			# Parsear con seguridad
+			var result = JSON.parse_string(file.get_as_text())
 			file.close()
-			posicion_jugador = datos["posicion_jugador"]
-			puntuacion_actual = datos["puntuacion"]
-			print("Juego cargado:", datos)
+			
+			if result.error == OK:
+				var datos = result.result
+				
+				posicion_jugador = datos.get("posicion_jugador", Vector2.ZERO)
+				puntuacion_actual = datos.get("puntuacion", 0)
+				# 💥 NUEVO: Cargamos el inventario, con fallback a Array vacío
+				inventario = datos.get("inventario", [])
+				
+				print("Juego cargado:", datos)
+			else:
+				print("ERROR: Fallo al parsear el archivo de guardado.")

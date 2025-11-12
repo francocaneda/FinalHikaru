@@ -27,3 +27,16 @@ func mostrar_item(textura_del_objeto: Texture2D):
 func resetear_inventario():
 	esconder_todos_los_iconos()
 	contador_objetos = 0
+
+# 💥 FUNCIÓN CORREGIDA: No espera un argumento (item_name), resolviendo el error.
+func remover_item():
+	
+	if contador_objetos > 0:
+		# Retrocede el contador y oculta el último slot utilizado (el escudo)
+		contador_objetos -= 1
+		iconos_del_inventario[contador_objetos].hide()
+		iconos_del_inventario[contador_objetos].texture = null 
+		
+		print("Escudo removido del HUD.")
+	else:
+		print("Error: No hay objetos para remover del HUD.")

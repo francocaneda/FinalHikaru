@@ -7,9 +7,13 @@ signal vida_cambiada(vida_actual: int, vida_maxima: int)
 # 🛡️ Propiedades del Boss
 @export var velocidad: float = 200.0
 @export var vida_maxima: int = 4 # La vida máxima es 4
+@export var tiempo_cooldown_danio: float = 0.5 # Tiempo en segundos para evitar que se pegue
 
 var vida_actual: int
 var jugador: CharacterBody2D = null
+
+# 💥 NUEVO: Control para evitar el "pegado" y spam de daño
+var puede_danar: bool = true 
 
 # 📢 Referencias a nodos hijos
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D 
@@ -56,13 +60,38 @@ func _actualizar_animacion(direccion: Vector2):
 		else:
 			anim.play("enemigoarriba") 
 
-# 💥 FUNCIÓN DE COLISIÓN MORTAL (sin cambios)
+# 💥 FUNCIÓN DE COLISIÓN MORTAL (CORREGIDA)
 func _on_detector_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Jugador"):
-		if body.has_method("go_to_game_over"):
-			body.go_to_game_over()
+		
+		# 💥 NUEVO: Solo causa daño si no está en cooldown
+		if puede_danar:
+			puede_danar = false
+			
+			if body.has_method("go_to_game_over"):
+				body.go_to_game_over()
+			
+			# Lógica de separación (Knockback visual y Cooldown)
+			_aplicar_separacion(body)
 
-# ⚔️ Función de daño
+func _aplicar_separacion(body: Node2D):
+	# 1. Empujar al Boss lejos del jugador (Knockback al Boss)
+	var direccion_separacion = (position - body.position).normalized()
+	velocity = direccion_separacion * velocidad # Usa la velocidad como fuerza de empuje
+	
+	# 2. Detener el movimiento normal por un instante
+	set_physics_process(false)
+	
+	# 3. Iniciar el cooldown de daño
+	var timer_cooldown = get_tree().create_timer(tiempo_cooldown_danio)
+	timer_cooldown.timeout.connect(func():
+		# Reanudar movimiento normal
+		set_physics_process(true) 
+		# Permitir que el Boss vuelva a dañar
+		puede_danar = true 
+	)
+
+# ⚔️ Función de daño (sin cambios)
 func recibir_danio(cantidad: int = 1):
 	vida_actual -= cantidad
 	print("Boss recibió daño. Vida restante:", vida_actual)

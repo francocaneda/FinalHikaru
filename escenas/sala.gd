@@ -39,7 +39,7 @@ func instanciar_enemigo_de_forma_segura():
 			
 		var enemigo_volador = escena_enemigo_volador.instantiate()
 		add_child(enemigo_volador)
-		enemigo_volador.global_position = Vector2(0, 0)
+		enemigo_volador.global_position = Vector2(800, 400)
 		print("¡Enemigo volador instanciado!")
 
 func abrir_puerta():

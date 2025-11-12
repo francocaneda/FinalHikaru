@@ -5,7 +5,7 @@ extends CharacterBody2D
 @export var tiempo_de_carga: float = 1.0     
 
 var puede_disparar: bool = true
-var jugador
+var jugador: CharacterBody2D = null
 
 # 📢 Referencias a nodos hijos
 @onready var anim: AnimatedSprite2D = $anim 
@@ -44,7 +44,6 @@ func disparar():
 		
 		puede_disparar = false
 		
-		
 		anim.play("carga") 
 		
 		var timer = get_tree().create_timer(tiempo_de_carga)
@@ -67,16 +66,18 @@ func lanzar_laser():
 		
 		var cuerpo_golpeado = rayo_laser.get_collider()
 		
-		# print("DEBUG COLISIÓN: Golpea:", cuerpo_golpeado.name, " Tipo:", cuerpo_golpeado.get_class())
-		
 		if cuerpo_golpeado.is_in_group("Jugador"):
-			# LLAMA A LA FUNCIÓN DE GAME OVER DEL JUGADOR
+			
+			# Lógica de daño al jugador (Game Over o Escudo)
 			if cuerpo_golpeado.has_method("go_to_game_over"):
 				cuerpo_golpeado.go_to_game_over()
-			print("Láser golpeó al JUGADOR y activó Game Over!")
+				print("Láser golpeó al JUGADOR y activó Game Over/Escudo!")
 			
-			# 🛑 SOLUCIÓN AL CRASH: Salir inmediatamente.
-			return 
+			# 💥 CORRECCIÓN CLAVE: El juego solo se congela si el jugador muere.
+			# Si go_to_game_over NO cambia de escena (porque el escudo lo salvó),
+			# el código DEBE seguir. Si el jugador muere, Godot detendrá el juego.
+			# Por lo tanto, ¡no necesitamos el 'return' aquí! 
+			# El flujo continuará para dibujar y ocultar el láser.
 			
 	# DIBUJAR EL LÁSER
 	linea_laser.show()
@@ -85,6 +86,7 @@ func lanzar_laser():
 	linea_laser.points = temp_points 
 	
 	# Ocultar el láser (Efecto Flash) e iniciar cooldown
+	# Esta parte es CRUCIAL para que el ciclo de disparo continúe.
 	var flash_timer = get_tree().create_timer(0.1) 
 	flash_timer.timeout.connect(func():
 		linea_laser.hide()
@@ -108,9 +110,11 @@ func morir():
 	# Función de muerte (útil para la espada del jugador)
 	if is_instance_valid(sonido_muerte):
 		sonido_muerte.play()
+		# Desacopla y mueve el sonido a la raíz
 		sonido_muerte.get_parent().remove_child(sonido_muerte)
 		get_tree().root.add_child(sonido_muerte)
-		sonido_muerte.finished.connect(sonido_muerte.queue_free)
+		# Conecta la liberación
+		sonido_muerte.finished.connect(sonido_muerte.queue_free, CONNECT_ONE_SHOT)
 	
 	set_physics_process(false)
 	anim.hide()

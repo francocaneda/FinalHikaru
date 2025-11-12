@@ -30,7 +30,7 @@ size = Vector2(1196, 17.75)
 size = Vector2(65, 94)
 
 [node name="Dungeon" type="Node2D"]
-position = Vector2(644, 365)
+position = Vector2(640, 360)
 
 [node name="Sala" type="Node2D" parent="."]
 script = ExtResource("1_5oesj")
