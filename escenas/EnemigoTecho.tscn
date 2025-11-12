@@ -38,7 +38,7 @@ size = Vector2(84, 45)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbk2l"]
 size = Vector2(94, 54)
 
-[node name="TorretaTecho" type="CharacterBody2D"]
+[node name="TorretaTecho" type="CharacterBody2D" groups=["Enemigo"]]
 script = ExtResource("1_8v4d0")
 
 [node name="LaserVisual" type="Line2D" parent="."]

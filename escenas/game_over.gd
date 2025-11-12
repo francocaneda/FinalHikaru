@@ -20,8 +20,6 @@ func _ready():
 	# Accion para volver a jugar
 	volver_a_jugar_boton.grab_focus()
 	
-	#    Si la música está activada globalmente, la reproduce.
-	#    Se usa iniciar_musica_de_escena() que ya comprueba si musica_activada es true.
 	Audio.iniciar_musica_de_escena(musica_game_over)
 
 func _on_volver_a_jugar_pressed():
@@ -32,6 +30,5 @@ func _on_salir_pressed():
 	# Cierra el juego
 	get_tree().quit()
 
-# Nueva función que reproduce el sonido de selección
 func _on_boton_focused():
 	sonido_seleccion.play()

@@ -13,9 +13,6 @@ func _ready():
 	
 	$Detector.body_entered.connect(_on_Detector_body_entered)
 	
-	# 🔹 ELIMINAMOS esta conexión de aquí. Se manejaba en morir() para ser más robusto.
-	# if is_instance_valid(sonido_muerte):
-	# 	sonido_muerte.finished.connect(queue_free) 
 	pass
 
 func _physics_process(delta):
@@ -46,24 +43,13 @@ func _actualizar_animacion(direccion: Vector2):
 
 func _on_Detector_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Jugador"):
-		call_deferred("go_to_game_over")
-		print("¡Game Over!")
+		# 💥 CORRECCIÓN CLAVE: Llamamos a la función de muerte del JUGADOR
+		if body.has_method("go_to_game_over"):
+			body.go_to_game_over()
+		
+		print("¡Game Over activado por Enemigo Toro!")
 
-# Funcion que maneja el fin del juego
-func go_to_game_over():
-	# Limpia el HUD y el inventario del jugador.
-	HUD.resetear_inventario()
-	
-	if is_instance_valid(jugador):
-		jugador.inventario.clear()
-	
-	# Asumo que MusicManager es una referencia a Audio.gd
-	# Usaré MusicManager como estaba en tu código original.
-	if MusicManager.is_playing():
-		MusicManager.stop()
-	
-	get_tree().paused = true
-	get_tree().change_scene_to_file("res://escenas/GameOver.tscn")
+# 🛑 IMPORTANTE: SE ELIMINÓ la función local 'go_to_game_over()' que era obsoleta.
 
 func morir():
 	# 🔹 1. Reproduce el sonido de muerte y lo desacopla para que persista.
@@ -73,7 +59,6 @@ func morir():
 		get_tree().root.add_child(sonido_muerte)
 
 		# Conecta la señal `finished` del sonido al método `queue_free` del *propio nodo de sonido*.
-		# El flag CONNECT_ONE_SHOT asegura que la conexión se desconecte automáticamente después de una ejecución.
 		sonido_muerte.finished.connect(sonido_muerte.queue_free, CONNECT_ONE_SHOT)
 		
 		# Inicia la reproducción.

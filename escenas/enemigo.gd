@@ -14,7 +14,6 @@ func _ready():
 	# Conecta la senal de colision del detector
 	$Detector.body_entered.connect(_on_Detector_body_entered)
 	
-	# Eliminamos cualquier conexión automática de eliminación de aquí.
 	pass 
 
 func _physics_process(delta):
@@ -45,26 +44,13 @@ func _actualizar_animacion(direccion: Vector2):
 
 func _on_Detector_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Jugador"):
-		call_deferred("go_to_game_over")
-		print("¡Game Over!")
+		# 💥 CORRECCIÓN CLAVE: Llamamos a la función de muerte del JUGADOR
+		if body.has_method("go_to_game_over"):
+			body.go_to_game_over()
+		
+		print("¡Game Over activado por Enemigo!")
 
-
-func go_to_game_over():
-	# Limpiamos el inventario visual del HUD.
-	HUD.resetear_inventario()
-	
-	# Limpiamos el inventario interno del jugador.
-	# Verificamos que el nodo del jugador exista antes de intentar acceder a su inventario.
-	if get_parent().has_node("Jugador"):
-		get_parent().get_node("Jugador").inventario.clear()
-	
-	# Detiene la musica si se esta reproduciendo
-	if is_instance_valid(MusicManager):
-		if MusicManager.is_playing():
-			MusicManager.stop()
-	
-	get_tree().paused = true
-	get_tree().change_scene_to_file("res://escenas/GameOver.tscn")
+# 🛑 IMPORTANTE: SE ELIMINÓ la función local 'go_to_game_over()' que era obsoleta.
 
 func morir():
 	# 1. Reproduce el sonido de muerte inmediatamente.
@@ -77,8 +63,7 @@ func morir():
 		sonido_muerte.get_parent().remove_child(sonido_muerte)
 		get_tree().root.add_child(sonido_muerte)
 
-		# 🔹 CORRECCIÓN: Sintaxis de Godot 4 usando Callable (sonido_muerte.queue_free)
-		# y el flag CONNECT_ONE_SHOT en un diccionario.
+		# 🔹 Sintaxis de Godot 4 usando Callable
 		sonido_muerte.finished.connect(sonido_muerte.queue_free, CONNECT_ONE_SHOT)
 	
 	# 3. Oculta el enemigo y detiene su movimiento.

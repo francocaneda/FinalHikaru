@@ -4,19 +4,17 @@ extends Node2D
 @onready var jugador := $Jugador
 @onready var pared_secreta: Node2D = $ParedSecreta
 @onready var detector_sala_3: Area2D = $DetectorSala3
-@onready var musica_sala: AudioStreamPlayer = $MusicaSala
+@onready var musica_sala: AudioStreamPlayer = $MusicaSala # Se mantiene para moverlo a la raíz
 
 @export var escena_enemigo_volador: PackedScene
 @export var escena_pared_secreta: PackedScene
-# 🆕 NUEVA EXPORTACIÓN: Para cargar la escena del EnemigoTecho
 @export var escena_enemigo_techo: PackedScene 
 
 func _ready():
 	# El jugador comienza en una posicion adecuada para la entrada de Sala 2
 	jugador.position = Vector2(-400, 0)
 	
-
-	# 🆕 INICIA EL COMBATE AL ENTRAR EN LA SALA
+	# INICIA EL COMBATE AL ENTRAR EN LA SALA
 	spawn_enemigos_sala2()
 
 func _physics_process(delta):
@@ -27,24 +25,22 @@ func _physics_process(delta):
 	if enemigos_restantes.size() == 0:
 		abrir_puerta()
 
-# ⚔️ NUEVO ENCUENTRO: Define dónde y qué enemigos aparecen
+# ⚔️ ENCUENTRO: Define dónde y qué enemigos aparecen
 func spawn_enemigos_sala2():
 	# Instancia 2 Enemigos Voladores en posiciones variadas
 	instanciar_enemigo_volador(Vector2(900, 500))
 	instanciar_enemigo_volador(Vector2(900, 500))
 
-	# 🆕 Instancia 1 Enemigo Techo en el centro superior (posición de torreta)
+	# Instancia 2 Enemigo Techo
 	instanciar_enemigo_techo(Vector2(800, 50))
 	instanciar_enemigo_techo(Vector2(490, 50))
 	print("Encuentro de Sala 2 iniciado.")
 
 # --- Funciones de Instanciación ---
 
-# 🛠️ Función Volador modificada para aceptar posición y usar deferred
 func instanciar_enemigo_volador(posicion_spawn: Vector2):
 	call_deferred("instanciar_enemigo_volador_de_forma_segura", posicion_spawn)
 
-# 🛠️ Función de Volador modificada para usar la posición
 func instanciar_enemigo_volador_de_forma_segura(posicion_spawn: Vector2):
 	if escena_enemigo_volador:
 		# Instancia la pared secreta si aun no existe (solo si es necesario)
@@ -57,11 +53,10 @@ func instanciar_enemigo_volador_de_forma_segura(posicion_spawn: Vector2):
 		var enemigo_volador = escena_enemigo_volador.instantiate()
 		add_child(enemigo_volador)
 		
-		# 🛠️ Usa la posición de spawn
+		# Usa la posición de spawn
 		enemigo_volador.global_position = posicion_spawn
 		print("¡Enemigo volador instanciado en:", posicion_spawn, "!")
 
-# 🆕 Función para instanciar el Enemigo Techo
 func instanciar_enemigo_techo(posicion_spawn: Vector2):
 	call_deferred("instanciar_enemigo_techo_de_forma_segura", posicion_spawn)
 
@@ -85,7 +80,7 @@ func _on_detector_sala_3_body_entered(body: Node2D) -> void:
 		call_deferred("cambiar_a_siguiente_escena")
 
 func cambiar_a_siguiente_escena():
-	# Mueve el nodo de música a la raíz antes de cambiar de escena (manteniendo tu lógica)
+	# Mueve el nodo de música a la raíz antes de cambiar de escena (para que sobreviva en Sala3)
 	musica_sala.get_parent().remove_child(musica_sala)
 	get_tree().root.add_child(musica_sala)
 

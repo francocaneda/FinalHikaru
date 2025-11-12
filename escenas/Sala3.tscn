@@ -1,10 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://d1psf1ekje8f8"]
+[gd_scene load_steps=14 format=3 uid="uid://d1psf1ekje8f8"]
 
 [ext_resource type="Script" uid="uid://bm3wtx1eyjr67" path="res://escenas/sala_3.gd" id="1_c8m01"]
 [ext_resource type="Texture2D" uid="uid://86wmwgmlujiy" path="res://sprites/sala3.png" id="1_t20p7"]
+[ext_resource type="PackedScene" uid="uid://b0kip1stqegow" path="res://escenas/EnemigoVolador.tscn" id="2_lr5em"]
 [ext_resource type="PackedScene" uid="uid://bea5ula71tjjd" path="res://escenas/Jugador.tscn" id="2_xo63k"]
 [ext_resource type="PackedScene" uid="uid://cm76sxp40xoq3" path="res://escenas/BossFinal.tscn" id="3_6w0kg"]
+[ext_resource type="PackedScene" uid="uid://blbxgv5i042mn" path="res://escenas/Enemigo.tscn" id="3_sp5uh"]
 [ext_resource type="AudioStream" uid="uid://vl4cw7ycqcvc" path="res://sounds/musicaFondo.ogg" id="3_xtkfi"]
+[ext_resource type="PackedScene" uid="uid://7st2fjxi8hoq" path="res://escenas/EnemigoToro.tscn" id="4_j4hyf"]
 [ext_resource type="FontFile" uid="uid://xlxdarjwu66t" path="res://fonts/morpheus.ttf" id="4_rtbhx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xo63k"]
@@ -21,6 +24,9 @@ size = Vector2(1119, 21)
 
 [node name="Sala3" type="Node2D"]
 script = ExtResource("1_c8m01")
+escena_enemigo_volador = ExtResource("2_lr5em")
+escena_enemigo = ExtResource("3_sp5uh")
+escena_enemigo_toro = ExtResource("4_j4hyf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(640, 360.5)

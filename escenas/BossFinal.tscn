@@ -117,7 +117,7 @@ size = Vector2(85.5, 97.25)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ulnqd"]
 size = Vector2(103.5, 114)
 
-[node name="BossFinal" type="CharacterBody2D"]
+[node name="BossFinal" type="CharacterBody2D" groups=["Enemigo"]]
 script = ExtResource("1_nw804")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
